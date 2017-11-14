@@ -11,6 +11,6 @@ Score function method for gradient of simulated values using automatic different
 
 The literature for *score function* or *likelihood ratio* methods is vast. The following are a good starting points.
 
-- Fu, M. C. (2006). Gradient estimation. Handbooks in operations research and management science, 13, 575–616.
+- Fu, M. C. (2006). Gradient estimation. Handbooks in operations research and management science, 13, Chapter 19, 575–616.
 
-- Rubinstein, R. Y., & Kroese, D. P. (2016). Simulation and the monte carlo method, Chapter 7. John Wiley \& Sons.
+- Rubinstein, R. Y., & Kroese, D. P. (2016). Simulation and the Monte Carlo method, Chapter 7. John Wiley \& Sons.
