@@ -11,34 +11,34 @@ Score function method for gradient of simulated values using automatic different
 
 When `x ∼ F(⋅, β)`, integrals of the form
 
-```
+```math
 s(β) = Eᵦ[h(x)] = ∫ h(x) dF(x,β)
 ```
 
 can be estimated by simulating values `xᵢ ∼ F(⋅, β)` from the distribution and taking the mean, ie
 
-```
+```math
 ŝ(β) = 1/N ∑ᵢ h(xᵢ)
 ```
 
-We are frequently interested in a Monte Carlo estimator for `∂s/∂θ`. The “score function” trick is to multiply and divide by the density before differentiating, and use
+We are frequently interested in a Monte Carlo estimator for `∂s/∂β`. The “score function” trick is to multiply and divide by the density before differentiating, and use
 
-```
+```math
 ∂ŝ(β)/∂β = 1/N ∑ᵢ h(xᵢ) ∂log(f(x, β))/∂β
-
 ```
+
 in Monte Carlo simulations. Note that various technical conditions are required for this (you need to be able to exchange the integral and the differentiation operators), see the references below.
 
 This package implements `score_AD` and `score_AD_log` to program these seamlessly using automatic differentiation (currently [ForwardDiff.jl](https://github.com/JuliaDiff/ForwardDiff.jl) is supported). You can write, for example,
 
-```
+```julia
 dist = SomeDistribution(β)
 mean(h(x) * score_AD(pdf(dist, β)) for x in xs)
 ```
 
 or (note the log, which is preferred for numerical reasons)
 
-```
+```julia
 dist = SomeDistribution(β)
 mean(h(x) * score_AD_log(logpdf(dist, β)) for x in xs)
 ```
