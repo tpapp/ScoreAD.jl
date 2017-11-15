@@ -15,13 +15,13 @@ When `x ∼ F(⋅, β)`, integrals of the form
 s(β) = Eᵦ[h(x)] = ∫ h(x) dF(x,β)
 ```
 
-can be estimated by simulating values from the distribution and taking the mean, ie
+can be estimated by simulating values `xᵢ ∼ F(⋅, β)` from the distribution and taking the mean, ie
 
 ```
 ŝ(β) = 1/N ∑ᵢ h(xᵢ)
 ```
 
-We are frequently interested in an estimator for `∂s/∂θ`. The “score function” trick is to multiply and divide by the density before differentiating, and use
+We are frequently interested in a Monte Carlo estimator for `∂s/∂θ`. The “score function” trick is to multiply and divide by the density before differentiating, and use
 
 ```
 ∂ŝ(β)/∂β = 1/N ∑ᵢ h(xᵢ) ∂log(f(x, β))/∂β
