@@ -3,7 +3,7 @@ using Base.Test
 using ScoreAD
 
 using Distributions
-import ForwardDiff: derivative
+import ForwardDiff: Dual, value, derivative
 
 """
     BernoulliData(N, s)
@@ -53,4 +53,26 @@ data = NormalData(x)
         @test data(σ) ≈ mean(x)
         @test derivative(data, σ) ≈ mean(x * (x^2/(σ^3) - 1/σ) for x in x)
     end
+end
+
+@testset "reject nonfinite" begin
+    @test (@inferred reject_nonfinite(-1.0)) ≡ -1.0
+    @test (@inferred reject_nonfinite(-Inf)) ≡ -Inf
+    @test (@inferred reject_nonfinite(Inf)) ≡ -Inf
+    @test (@inferred reject_nonfinite(NaN)) ≡ -Inf
+
+    @test (@inferred reject_nonfinite(Dual(-1.0, (2.0, 3.0)))) ==
+        Dual(-1.0, (2.0, 3.0))
+
+    function test_rejected_Dual(ℓ)
+        r = @inferred reject_nonfinite(ℓ)
+        @test value(r) ≡ oftype(value(ℓ), -Inf)
+        @test typeof(r) ≡ typeof(ℓ)
+    end
+
+    test_rejected_Dual(Dual(-Inf, (2.0, 3.0)))
+    test_rejected_Dual(Dual(Inf, (2.0, 3.0)))
+    test_rejected_Dual(Dual(NaN, (2.0, 3.0)))
+    test_rejected_Dual(Dual(1.0, (NaN, 3.0)))
+    test_rejected_Dual(Dual(1.0, (2.0, -Inf)))
 end

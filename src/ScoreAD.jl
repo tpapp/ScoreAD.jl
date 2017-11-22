@@ -1,8 +1,8 @@
 module ScoreAD
 
-import ForwardDiff: Dual, partials
+import ForwardDiff: Dual, value, partials
 
-export score_AD, score_AD_log
+export score_AD, score_AD_log, reject_nonfinite
 
 """
     score_AD(p)
@@ -30,5 +30,31 @@ score_AD(p) == score_AD_log(log(p))
 score_AD_log(ℓ::Real) = one(ℓ)
 
 score_AD_log(ℓ::Dual{T,V}) where {T,V} = Dual{T}(one(V), partials(ℓ))
+
+"""
+    reject_nonfinite(ℓ)
+
+When the likelihood `ℓ` (or its derivative, when applicable) is not finite,
+replace the value with `-Inf`.
+
+Always return the same type as `ℓ`.
+
+# Usage
+
+This useful when calculations using automatic differentiation of a score
+function in a (finite) sample, which may deliver non-finite derivatives for
+extreme values. In this case, reject the parameter.
+"""
+@inline reject_nonfinite(ℓ::V) where {V <: Real} =
+    ifelse(isfinite(ℓ), ℓ, V(-Inf))
+
+@inline function reject_nonfinite(ℓ::Dual{T,V}) where {T,V}
+    p = partials(ℓ)
+    if isfinite(value(ℓ)) && all(isfinite, p)
+        ℓ
+    else
+        Dual{T}(V(-Inf), p)
+    end
+end
 
 end # module
