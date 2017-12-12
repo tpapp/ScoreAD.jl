@@ -1,8 +1,7 @@
+__precompile__()
 module ScoreAD
 
-import ForwardDiff: Dual, value, partials
-
-export score_AD, score_AD_log, reject_nonfinite
+using ForwardDiff: Dual, value, partials
 
 """
     score_AD(p)

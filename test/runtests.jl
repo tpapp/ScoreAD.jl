@@ -1,8 +1,8 @@
 using Base.Test
 
-using ScoreAD
+using ScoreAD: score_AD, score_AD_log, reject_nonfinite
 
-using Distributions
+using Distributions: Normal, logpdf
 import ForwardDiff: Dual, value, derivative
 
 """
@@ -26,7 +26,7 @@ end
     θ = 0.5
     for θ in linspace(0.1, 0.9, 100)
         @test data(θ) ≈ s/N
-        @test derivative(data, θ) ≈ s/N*1/θ
+        @test derivative(data, θ) ≈ s/N * 1/θ
     end
 end
 
