@@ -1,8 +1,9 @@
-using Base.Test
+using Test
 
 using ScoreAD: score_AD, score_AD_log, reject_nonfinite
 
 using Distributions: Normal, logpdf
+using Statistics: mean
 import ForwardDiff: Dual, value, derivative
 
 """
@@ -24,7 +25,7 @@ end
     s = 61
     data = BernoulliData(N, s)
     θ = 0.5
-    for θ in linspace(0.1, 0.9, 100)
+    for θ in range(0.1; stop = 0.9, length = 100)
         @test data(θ) ≈ s/N
         @test derivative(data, θ) ≈ s/N * 1/θ
     end
@@ -44,12 +45,11 @@ function (data::NormalData)(σ)
     mean(x * score_AD_log(logpdf(d, x)) for x in data.x)
 end
 
-σ = 1.0
-x = rand(Normal(0, σ), 100)
-data = NormalData(x)
-
 @testset "normal" begin
-    for σ in linspace(0.1, 5, 100)
+    σ = 1.0
+    x = rand(Normal(0, σ), 100)
+    data = NormalData(x)
+    for σ in range(0.1; stop = 5, length = 100)
         @test data(σ) ≈ mean(x)
         @test derivative(data, σ) ≈ mean(x * (x^2/(σ^3) - 1/σ) for x in x)
     end
