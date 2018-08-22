@@ -1,4 +1,3 @@
-__precompile__()
 module ScoreAD
 
 using ForwardDiff: Dual, value, partials

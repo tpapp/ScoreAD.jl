@@ -49,7 +49,7 @@ end
     σ = 1.0
     x = rand(Normal(0, σ), 100)
     data = NormalData(x)
-    for σ in linspace(0.1, 5, 100)
+    for σ in range(0.1; stop = 5, length = 100)
         @test data(σ) ≈ mean(x)
         @test derivative(data, σ) ≈ mean(x * (x^2/(σ^3) - 1/σ) for x in x)
     end
